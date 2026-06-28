@@ -52,7 +52,8 @@ public class MainActivity extends Activity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-                String js = "window.deleteNote=function(){" +
+                String js = "(function(){" +
+                        "window.deleteNote=function(){" +
                         "var n=cur&&cur();" +
                         "if(!n){alert('Select a note first.');return;}" +
                         "var name=n.title||'Untitled note';" +
@@ -60,7 +61,22 @@ public class MainActivity extends Activity {
                         "currentId=notes[0]?notes[0].id:null;" +
                         "saveStore();renderList();renderEditor();" +
                         "alert('Deleted '+name);" +
-                        "};";
+                        "};" +
+                        "window.bnotesLiveSave=function(){" +
+                        "var n=cur&&cur();if(!n)return;" +
+                        "var t=document.getElementById('title');" +
+                        "var g=document.getElementById('tags');" +
+                        "var b=document.getElementById('body');" +
+                        "if(t)n.title=t.value||'Untitled note';" +
+                        "if(g)n.tags=g.value||'';" +
+                        "if(b)n.body=b.value||'';" +
+                        "n.updated=now();saveStore();renderList();" +
+                        "};" +
+                        "window.bnotesAttach=function(){['title','tags','body'].forEach(function(id){var el=document.getElementById(id);if(el&&!el.dataset.live){el.dataset.live='1';el.addEventListener('input',window.bnotesLiveSave);}});};" +
+                        "var oldRenderEditor=window.renderEditor;" +
+                        "window.renderEditor=function(){oldRenderEditor();setTimeout(window.bnotesAttach,30);};" +
+                        "setTimeout(window.bnotesAttach,200);" +
+                        "})();";
                 view.evaluateJavascript(js, null);
             }
         });
