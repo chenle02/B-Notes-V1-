@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <queries>
+        <package android:name="com.chenboda01.bmapv2osflow96" />
+    </queries>
+
     <application
         android:label="B-Notes V1"
         android:icon="@drawable/ic_launcher"
